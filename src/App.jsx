@@ -1,21 +1,19 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router";
 import Home from "./pages/Home";
 import Add from "./pages/Add.jsx";
-import Book from "./pages/Book"; 
+import Book from "./pages/Book";
 import UpdateBook from "./pages/UpdateBook";
-import viteLogo from '/vite.svg'
 
 function App() {
   return (
     <Router>
-      <div>
-        <h1>Book Shop</h1>
-        <img src={viteLogo} alt="Vite Logo" />
-      </div>
+      {" "}
+      {/*  ต้องครอบด้วย Router */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/add" element={<Add />} />
+        <Route path="/book/:id" element={<Book />} />
         <Route path="/update/:id" element={<UpdateBook />} />
       </Routes>
     </Router>

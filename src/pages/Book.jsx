@@ -23,7 +23,7 @@ const Book = () => {
 
   useEffect(() => {
     // call api : getAllBooks
-    fetch("http://localhost:5000/api/books")
+    fetch("https://bookshop-api-er7t.onrender.com/api/books")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch books");
         return res.json();

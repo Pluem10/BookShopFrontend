@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import NavBar from "../components/NavBar";
 import Book from "../components/Bookitem";
@@ -11,7 +10,9 @@ const Home = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await fetch("https://bookshop-api-er7t.onrender.com/api/books");
+        const response = await fetch(
+          "https://bookshop-api-er7t.onrender.com/api/books"
+        );
         const data = await response.json();
         setItems(data);
       } catch (error) {
