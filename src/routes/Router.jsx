@@ -8,12 +8,12 @@ const router = createBrowserRouter([
     path: "/",
     element: <Home />,
   },
-  { 
+  {
     path: "/add",
     element: <Add />,
   },
   {
-    path: "/update/:id",
+    path: "/update",
     element: <Update />,
   },
 ]);

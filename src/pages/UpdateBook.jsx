@@ -2,17 +2,21 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
 
 const UpdateBook = () => {
-  // 1. get id from URL
   const { id } = useParams();
   const [book, setBook] = useState({
     title: "",
     author: "",
     category: "",
     publishYear: "",
-    coverImage: "",
-    description: "",
+    isbn: "",
     publisher: "",
-    status: "AVAILABLE",
+    edition: "",
+    pageCount: "",
+    language: "",
+    genre: "",
+    description: "",
+    status: "",
+    itemType: "",
   });
 
   // 2. get book by id
@@ -33,10 +37,15 @@ const UpdateBook = () => {
             author: "",
             category: "",
             publishYear: "",
-            coverImage: "",
-            description: "",
+            isbn: "",
             publisher: "",
-            status: "AVAILABLE",
+            edition: "",
+            pageCount: "",
+            language: "",
+            genre: "",
+            description: "",
+            status: "",
+            itemType: "",
           });
         }
       })
@@ -47,15 +56,19 @@ const UpdateBook = () => {
           author: "",
           category: "",
           publishYear: "",
-          coverImage: "",
-          description: "",
+          isbn: "",
           publisher: "",
-          status: "AVAILABLE",
+          edition: "",
+          pageCount: "",
+          language: "",
+          genre: "",
+          description: "",
+          status: "",
+          itemType: "",
         });
       });
   }, [id]);
 
-  // 3. handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setBook({ ...book, [name]: value });
@@ -64,13 +77,16 @@ const UpdateBook = () => {
   // 4. submit update
   const handleSubmit = async () => {
     try {
-      const response = await fetch("https://bookshop-api-er7t.onrender.com/api/books/" + id, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(book),
-      });
+      const response = await fetch(
+        "https://bookshop-api-er7t.onrender.com/api/books/" + id,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(book),
+        }
+      );
       if (response.ok) {
         alert("Book updated successfully !!");
         setBook({
@@ -78,10 +94,15 @@ const UpdateBook = () => {
           author: "",
           category: "",
           publishYear: "",
-          coverImage: "",
-          description: "",
+          isbn: "",
           publisher: "",
-          status: "AVAILABLE",
+          edition: "",
+          pageCount: "",
+          language: "",
+          genre: "",
+          description: "",
+          status: "",
+          itemType: "",
         });
       } else {
         alert("Failed to update book.");
@@ -196,10 +217,7 @@ const UpdateBook = () => {
         </label>
       </div>
       <div className="flex justify-center gap-4">
-        <button
-          className="btn btn-info text-1xl m-2"
-          onClick={handleSubmit}
-        >
+        <button className="btn btn-info text-1xl m-2" onClick={handleSubmit}>
           Update
         </button>
         <button
@@ -210,10 +228,15 @@ const UpdateBook = () => {
               author: "",
               category: "",
               publishYear: "",
-              coverImage: "",
-              description: "",
+              isbn: "",
               publisher: "",
-              status: "AVAILABLE",
+              edition: "",
+              pageCount: "",
+              language: "",
+              genre: "",
+              description: "",
+              status: "",
+              itemType: "",
             })
           }
         >
