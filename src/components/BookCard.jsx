@@ -1,35 +1,25 @@
+import BookService from "../services/book.service";
 import React from "react";
+import { Link } from "react-router-dom";
 
-const ItemCard = ({ 
-  itemId,
-  title,
-  author,
-  category,
-  publishYear,
-  coverImage,
-  itemType,
-  description,
-  publisher,
-  status
-}) => {
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบไอเท็มนี้?");
-    if (!confirmDelete) return;
+export const BookCard = (props) => {
+    const handleDelete = async (itemId) => {
+        const isConfirmed = window.confirm(
+            "Are you sure you want to delete this Book?"
+        );
+        if (!isConfirmed) return;
 
-    try {
-      const response = await fetch("https://bookshop-api-er7t.onrender.com/api/books/" + id, {
-        method: "DELETE",
-      });
-      if (response.ok) {
-        alert("Item deleted successfully!");
-        window.location.reload();
-      } else {
-        alert("Failed to delete item.");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+        try {
+            const response = await BookService.deleteBook(itemId)
+            if (response.status === 200) {
+                alert("Book deleted successfully!(ลบเเล้ว)");
+                window.location.reload();
+              
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        };
 
   return (
     <div className="card bg-base-100 w-96 shadow-md hover:shadow-lg transition">
@@ -51,7 +41,7 @@ const ItemCard = ({
           <p><b>หมวดหมู่:</b> {category}</p>
           <p><b>สำนักพิมพ์:</b> {publisher || "-"}</p>
           <p><b>ปี:</b> {publishYear}</p>
-          <p><b>สถานะ:</b> <span className="badge badge-outline">{status}</span></p>
+      
         </div>
         <div className="card-actions justify-end mt-3">
           <a href={"/update/" + itemId} className="btn btn-warning btn-sm">
@@ -66,4 +56,17 @@ const ItemCard = ({
   );
 };
 
-export default ItemCard;
+export default function BookCard({ book }) {
+  if (!book) return null;
+  const id = book.id || book._id || "";
+  return (
+    <div className="border p-4 rounded shadow">
+      <h3 className="text-lg font-semibold">{book.title || "Untitled"}</h3>
+      <p className="text-sm text-gray-600">Author: {book.author || "-"}</p>
+      <p className="text-sm">Price: {book.price ?? "-"}</p>
+      <div className="mt-2">
+        {id ? <Link to={`/books/${id}`} className="text-blue-600">View</Link> : null}
+      </div>
+    </div>
+  );
+}

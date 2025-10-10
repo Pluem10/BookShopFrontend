@@ -1,87 +1,91 @@
-import React, { useState, useEffect } from "react";
-import NavBar from "../components/NavBar";
-import Books from "../components/Bookitem";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
+const API_BASE = "https://bookshop-api-er7t.onrender.com/api";
 
 const Book = () => {
   const [books, setBooks] = useState([]);
-  const [filteredBooks, setFilteredBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleSearch = (keyword) => {
-    if (keyword === "") {
-      setFilteredBooks(books);
-      return;
+  const fetchBooks = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/books`);
+      const data = await res.json();
+      setBooks(data);
+    } catch (err) {
+      console.error("Error fetching books:", err);
+    } finally {
+      setLoading(false);
     }
-    const result = books.filter((book) => {
-      return (
-        book.title.toLowerCase().includes(keyword.toLowerCase()) ||
-        book.author.toLowerCase().includes(keyword.toLowerCase())
-      );
-    });
-    setFilteredBooks(result);
-    console.log("keyword", keyword);
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบหนังสือเล่มนี้?")) return;
+    try {
+      await fetch(`${API_BASE}/books/${id}`, { method: "DELETE" });
+      setBooks(books.filter((book) => book.id !== id));
+    } catch (err) {
+      console.error("Error deleting book:", err);
+    }
   };
 
   useEffect(() => {
-    // call api : getAllBooks
-    fetch("https://bookshop-api-er7t.onrender.com/api/books")
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch books");
-        return res.json();
-      })
-      .then((response) => {
-        if (Array.isArray(response)) {
-          setBooks(response);
-          setFilteredBooks(response);
-        } else if (response && response.data) {
-          setBooks(response.data);
-          setFilteredBooks(response.data);
-        } else {
-          setBooks([]);
-          setFilteredBooks([]);
-        }
-      })
-      .catch((err) => {
-        console.log(err.message);
-        setBooks([]);
-        setFilteredBooks([]);
-      });
+    fetchBooks();
   }, []);
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
+      </div>
+    );
+  }
+
   return (
-    <div className="container mx-auto">
-      <div>
-        <h1 className="title justify-center text-3xl text-center m-5 gap-x-5">
-          Book Shop
-        </h1>
+    <div className="p-6 md:p-10">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-primary">📚 รายการหนังสือทั้งหมด</h1>
+        <Link to="/add-book" className="btn btn-primary">
+          ➕ เพิ่มหนังสือใหม่
+        </Link>
       </div>
-      <div className="mb-5 flex justify-center items-center max-w">
-        <label className="input flex items-center gap-2 w-5xl">
-          <svg
-            className="h-[1em] opacity-50"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-          >
-            <g
-              strokeLinejoin="round"
-              strokeLinecap="round"
-              strokeWidth="2.5"
-              fill="none"
-              stroke="currentColor"
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <path d="m21 21-4.3-4.3"></path>
-            </g>
-          </svg>
-          <input
-            type="search"
-            name="keyword"
-            onChange={(e) => handleSearch(e.target.value)}
-            required
-            placeholder="Search books"
-          />
-        </label>
-      </div>
-      <Books books={filteredBooks} />
+
+      {books.length === 0 ? (
+        <p className="text-center text-gray-500">ยังไม่มีหนังสือในระบบ</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {books.map((book) => (
+            <div key={book.id} className="card bg-base-100 shadow-md hover:shadow-lg">
+              <figure>
+                <img
+                  src={book.coverImage || "https://via.placeholder.com/200x250"}
+                  alt={book.title}
+                  className="h-56 w-full object-cover"
+                />
+              </figure>
+              <div className="card-body p-4">
+                <h3 className="card-title text-lg">{book.title}</h3>
+                <p className="text-sm text-gray-600">{book.author}</p>
+                <p className="text-xs text-gray-500">{book.publishYear}</p>
+                <div className="flex justify-between mt-3">
+                  <Link
+                    to={`/update-book/${book.id}`}
+                    className="btn btn-sm btn-outline btn-success"
+                  >
+                    แก้ไข
+                  </Link>
+                  <button
+                    className="btn btn-sm btn-outline btn-error"
+                    onClick={() => handleDelete(book.id)}
+                  >
+                    ลบ
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router";
-import { Add } from "../pages/Add";
+import AddBook from "../pages/AddBook"; 
 import Update from "../pages/UpdateBook";
 import Home from "../pages/Book";
 
@@ -10,7 +10,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/add",
-    element: <Add />,
+    element: <AddBook />,
   },
   {
     path: "/update",

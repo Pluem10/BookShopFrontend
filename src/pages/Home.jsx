@@ -1,40 +1,58 @@
 import React, { useEffect, useState } from "react";
-import NavBar from "../components/NavBar";
-import Book from "../components/Bookitem";
+import BookList from "../components/BookList";
+import BookService from "../services/book.service.js";
 
 const Home = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [reload, setReload] = useState(0);
 
-  // Fetch items from API
   useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const response = await fetch(
-          "https://bookshop-api-er7t.onrender.com/api/books"
-        );
-        const data = await response.json();
-        setItems(data);
-      } catch (error) {
-        console.error("Error fetching items:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    let mounted = true;
+    setLoading(true);
+    setError(null);
 
-    fetchItems();
-  }, []);
+    BookService.getAllBooks()
+      .then((data) => {
+        console.log("BookService.getAllBooks ->", data);
+        if (!mounted) return;
+        const list = Array.isArray(data) ? data : data?.books ?? [];
+        setItems(list);
+      })
+      .catch((err) => {
+        if (!mounted) return;
+        console.error("Error fetching items:", err);
+        setError(err?.message || "Failed to fetch items");
+        setItems([]);
+      })
+      .finally(() => {
+        if (!mounted) return;
+        setLoading(false);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [reload]);
+
+  const handleRetry = () => setReload((r) => r + 1);
 
   return (
-    <div>
-      <NavBar />
-      <div className="container mx-auto p-4">
-        {loading ? (
-          <p className="text-center text-gray-500">Loading...</p>
-        ) : (
-          <Book items={items} />
-        )}
-      </div>
+    <div className="container mx-auto p-4">
+      {error ? (
+        <div className="text-center">
+          <p className="text-red-600 mb-2">Error: {error}</p>
+          <button
+            onClick={handleRetry}
+            className="px-4 py-2 bg-blue-600 text-white rounded"
+          >
+            Retry
+          </button>
+        </div>
+      ) : (
+        <BookList books={items} loading={loading} />
+      )}
     </div>
   );
 };

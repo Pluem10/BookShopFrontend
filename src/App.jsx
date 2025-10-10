@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 import Home from "./pages/Home";
-import Add from "./pages/Add.jsx";
+import Add from "./pages/AddBook.jsx";
 import Book from "./pages/Book";
 import UpdateBook from "./pages/UpdateBook";
 

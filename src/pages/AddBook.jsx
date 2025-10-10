@@ -1,18 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const API_BASE = "https://bookshop-api-er7t.onrender.com/api";
 
-const UpdateBook = () => {
-  const { id } = useParams();
-  const [book, setBook] = useState({});
+const AddBook = () => {
+  const [book, setBook] = useState({ title: "", author: "", publishYear: "", coverImage: "" });
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetch(`${API_BASE}/books/${id}`)
-      .then((res) => res.json())
-      .then((data) => setBook(data));
-  }, [id]);
 
   const handleChange = (e) => {
     setBook({ ...book, [e.target.name]: e.target.value });
@@ -20,8 +13,8 @@ const UpdateBook = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await fetch(`${API_BASE}/books/${id}`, {
-      method: "PUT",
+    await fetch(`${API_BASE}/books`, {
+      method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(book),
     });
@@ -30,12 +23,11 @@ const UpdateBook = () => {
 
   return (
     <div className="p-10 max-w-lg mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-primary text-center">✏️ แก้ไขหนังสือ</h1>
+      <h1 className="text-3xl font-bold mb-6 text-primary text-center">➕ เพิ่มหนังสือใหม่</h1>
       <form onSubmit={handleSubmit} className="card bg-base-100 shadow-xl p-6 space-y-4">
         <input
           type="text"
           name="title"
-          value={book.title || ""}
           placeholder="ชื่อหนังสือ"
           className="input input-bordered w-full"
           onChange={handleChange}
@@ -44,7 +36,6 @@ const UpdateBook = () => {
         <input
           type="text"
           name="author"
-          value={book.author || ""}
           placeholder="ผู้เขียน"
           className="input input-bordered w-full"
           onChange={handleChange}
@@ -53,7 +44,6 @@ const UpdateBook = () => {
         <input
           type="number"
           name="publishYear"
-          value={book.publishYear || ""}
           placeholder="ปีที่พิมพ์"
           className="input input-bordered w-full"
           onChange={handleChange}
@@ -61,15 +51,14 @@ const UpdateBook = () => {
         <input
           type="text"
           name="coverImage"
-          value={book.coverImage || ""}
-          placeholder="URL ปกหนังสือ"
+          placeholder="URL ปกหนังสือ (ถ้ามี)"
           className="input input-bordered w-full"
           onChange={handleChange}
         />
-        <button className="btn btn-primary w-full">บันทึกการแก้ไข</button>
+        <button className="btn btn-primary w-full">บันทึก</button>
       </form>
     </div>
   );
 };
 
-export default UpdateBook;
+export default AddBook;
