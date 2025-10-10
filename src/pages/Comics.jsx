@@ -1,54 +1,48 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
-const API_BASE = "https://bookshop-api-er7t.onrender.com/api";
+import Swal from "sweetalert2";
+import ComicList from "../components/ComicList";
+import ComicService from "../services/comic.service";
 
 const Comics = () => {
   const [comics, setComics] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchComics = async () => {
-    try {
-      const res = await fetch(`${API_BASE}/comics`);
-      const data = await res.json();
-      setComics(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    fetchComics();
+    const getAllComics = async () => {
+      try {
+        const response = await ComicService.getAllComic();
+        if (response.status === 200) {
+          setComics(response.data.data);
+        }
+      } catch (error) {
+        Swal.fire({
+          title: "Get All Comics",
+          icon: "error",
+          text: error?.response?.data?.message || error.message,
+        });
+      }
+    };
+
+    getAllComics();
   }, []);
 
-  if (loading)
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <span className="loading loading-spinner text-primary"></span>
-      </div>
-    );
-
   return (
-    <div className="p-6 md:p-10">
-      <h1 className="text-3xl font-bold text-primary mb-6">📖 การ์ตูนทั้งหมด</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {comics.map((c) => (
-          <div key={c.id} className="card bg-base-100 shadow-md">
-            <figure>
-              <img
-                src={c.coverImage || "https://via.placeholder.com/200x250"}
-                alt={c.title}
-                className="h-56 w-full object-cover"
-              />
-            </figure>
-            <div className="card-body p-4">
-              <h3 className="card-title">{c.title}</h3>
-              <p className="text-sm text-gray-500">{c.author}</p>
-            </div>
+    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-red-900 text-white">
+      {/* Header */}
+      <div className="max-w-7xl mx-auto px-4 py-10">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-red-300 mb-4 drop-shadow-lg">
+            Comics
+          </h1>
+          <div className="flex justify-center">
+            
           </div>
-        ))}
+        </div>
+
+        {/* Comic List */}
+        <div className="bg-black bg-opacity-40 rounded-lg p-6">
+          <ComicList comics={comics} />
+        </div>
       </div>
     </div>
   );

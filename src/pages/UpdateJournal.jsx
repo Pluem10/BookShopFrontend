@@ -1,51 +1,51 @@
+
 import React, { useState, useEffect } from "react";
-import BookService from "../services/book.service.js";
+import JournalService from "../services/journal.service.js";
 import Swal from "sweetalert2";
 import { useNavigate, useParams } from "react-router";
 
-const UpdateBook = () => {
+
+const UpdateJournal = () => {
+
   const navigate = useNavigate();
-  const { id } = useParams();
-  const [book, setBook] = useState({
+    const { id } = useParams();
+
+  const [journal, setJournal] = useState({
     title: "",
     author: "",
     category: "",
     publishYear: "",
-    isbn: "",
+    issn: "",
+    volume: "",
+    issue: "",
+    publicationFrequency: "MONTHLY",
     publisher: "",
-    edition: "",
-    pageCount: "",
-    language: "",
-    genre: "",
     description: "",
-    coverImage: "",
-    location: "A1-B2-C3",
+    coverImage: ""
   });
-
   useEffect(() => {
-    const updateBook = async (id) => {
+    const updateJournal = async (id) => {
       try {
-        const resp = await BookService.getBookById(id);
+        const resp = await JournalService.getJournalById(id);
         // console.log(resp.data.data);
         if (resp.status === 200) {
-          setBook(resp.data.data);
+          setJournal(resp.data.data);
         }
       } catch (error) {
         Swal.fire({
-          title: "Get All book",
+          title: "Get All restaurants",
           icon: "error",
           text: error?.response?.data?.message || error.message,
         });
       }
     };
-    updateBook(id);
+    updateJournal(id);
   }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setBook((prev) => ({ ...prev, [name]: value }));
+    setJournal((prev) => ({ ...prev, [name]: value }));
   };
-
 
 
   const handleSubmit = async (e) => {
@@ -53,25 +53,24 @@ const UpdateBook = () => {
 
 
     try {
-      const newBook = await BookService.editBookById(id, book);
+      const newJournal = await JournalService.editJournalById(id,journal)
 
-      if (newBook.status === 201 || newBook.status === 200) {
+      if (newJournal.status === 201 || newJournal.status === 200) {
         await Swal.fire({
-          title: "Update new book",
-          text: "Update book successfully!",
+          title: "Update journal",
+          text: "Update journal successfully!",
           icon: "success",
         });
-
-        navigate("/");
+        navigate("/journals");
       }
 
     } catch (error) {
       await Swal.fire({
-        title: "Update book",
+        title: "Update journal",
         text: error.message || "Request failed",
         icon: "error",
       });
-      console.error("Create book error:", error);
+      console.error("Create journal error:", error);
     }
   };
 
@@ -83,7 +82,7 @@ const UpdateBook = () => {
           className="w-full p-6 m-auto bg-white rounded-md shadow-md ring-2 ring-gray-800/50 max-w-2xl"
         >
           <h1 className="text-2xl font-semibold text-center text-gray-700 mb-6">
-            Update Book
+             Update Journal
           </h1>
 
           <div className="space-y-4">
@@ -96,7 +95,7 @@ const UpdateBook = () => {
                 placeholder="Enter title"
                 className="w-full input input-bordered"
                 name="title"
-                value={book.title}
+                value={journal.title}
                 onChange={handleChange}
                 required
               />
@@ -111,7 +110,7 @@ const UpdateBook = () => {
                 placeholder="Enter author"
                 className="w-full input input-bordered"
                 name="author"
-                value={book.author}
+                value={journal.author}
                 onChange={handleChange}
               />
             </div>
@@ -125,7 +124,7 @@ const UpdateBook = () => {
                 placeholder="Enter category"
                 className="w-full input input-bordered"
                 name="category"
-                value={book.category}
+                value={journal.category}
                 onChange={handleChange}
               />
             </div>
@@ -139,7 +138,7 @@ const UpdateBook = () => {
                 placeholder="Enter publish year"
                 className="w-full input input-bordered"
                 name="publishYear"
-                value={book.publishYear}
+                value={journal.publishYear}
                 onChange={handleChange}
                 min="0"
               />
@@ -147,85 +146,58 @@ const UpdateBook = () => {
 
             <div>
               <label className="label">
-                <span className="text-base label-text text-black">ISBN</span>
+                <span className="text-base label-text text-black">issn</span>
               </label>
               <input
                 type="text"
-                placeholder="Enter ISBN"
+                placeholder="Enter issn"
                 className="w-full input input-bordered"
-                name="isbn"
-                value={book.isbn}
+                name="issn"
+                value={journal.issn}
                 onChange={handleChange}
-                readOnly />
+                readOnly
+              />
             </div>
 
             <div>
               <label className="label">
-                <span className="text-base label-text text-black">Publisher</span>
+                <span className="text-base label-text text-black">volume</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Enter volume"
+                className="w-full input input-bordered"
+                name="volume"
+                value={journal.volume}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <label className="label">
+                <span className="text-base label-text text-black">issue</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Enter issue"
+                className="w-full input input-bordered"
+                name="issue"
+                value={journal.issue}
+                onChange={handleChange}
+                readOnly
+              />
+            </div>
+
+            <div>
+              <label className="label">
+                <span className="text-base label-text text-black">publisher</span>
               </label>
               <input
                 type="text"
                 placeholder="Enter publisher"
                 className="w-full input input-bordered"
                 name="publisher"
-                value={book.publisher}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div>
-              <label className="label">
-                <span className="text-base label-text text-black">Edition</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Enter edition"
-                className="w-full input input-bordered"
-                name="edition"
-                value={book.edition}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div>
-              <label className="label">
-                <span className="text-base label-text text-black">Page Count</span>
-              </label>
-              <input
-                type="number"
-                placeholder="Enter page count"
-                className="w-full input input-bordered"
-                name="pageCount"
-                value={book.pageCount}
-                onChange={handleChange}
-                min="0"
-              />
-            </div>
-
-            <div>
-              <label className="label">
-                <span className="text-base label-text text-black">Language</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Enter language"
-                className="w-full input input-bordered"
-                name="language"
-                value={book.language}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div>
-              <label className="label">
-                <span className="text-base label-text text-black">Genre</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Enter genre"
-                className="w-full input input-bordered"
-                name="genre"
-                value={book.genre}
+                value={journal.publisher}
                 onChange={handleChange}
               />
             </div>
@@ -239,7 +211,7 @@ const UpdateBook = () => {
                 placeholder="Enter description"
                 className="w-full input input-bordered"
                 name="description"
-                value={book.description}
+                value={journal.description}
                 onChange={handleChange}
               />
             </div>
@@ -251,17 +223,19 @@ const UpdateBook = () => {
               <input
                 type="text"
                 className="w-full input input-bordered"
-                value={book.coverImage}
+                value={journal.coverImage}
                 onChange={handleChange}
                 placeholder="https://example.com/image.jpg"
                 name="coverImage"
               />
-              {book.coverImage && (
+              {journal.coverImage && (
                 <div className="flex items-center gap-2 mt-2">
-                  <img className="h-32" src={book.coverImage} alt="cover preview" />
+                  <img className="h-32" src={journal.coverImage} alt="cover preview" />
                 </div>
               )}
             </div>
+
+
 
             <div className="flex justify-center items-center my-6 space-x-4">
               <button type="submit" className="btn bg-green-500 text-white px-6">
@@ -273,6 +247,8 @@ const UpdateBook = () => {
       </div>
     </div>
   );
-};
 
-export default UpdateBook;
+
+}
+
+export default UpdateJournal

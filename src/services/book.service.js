@@ -1,30 +1,24 @@
-import api from "./api.js";
+import api from "./api.js"
+const BOOK_API = import.meta.env.VITE_BOOK_API;
 
-const BOOK_API = import.meta.env.VITE_BOOK_API || import.meta.env.BOOK_API || "/api/books";
 
 const getAllBooks = async () => {
-  const res = await api.get(BOOK_API);
-  return res.data;
+  return await api.get(BOOK_API);
 };
 
+
 const getBookById = async (id) => {
-  const res = await api.get(`${BOOK_API}/${id}`);
-  return res.data;
+  return await api.get(`${BOOK_API}/${id}`);
 };
 
 const editBookById = async (id, book) => {
-  const res = await api.put(`${BOOK_API}/${id}`, book);
-  return res.data;
+  return await api.put(`${BOOK_API}/${id}`, book);
 };
 
-const createBook = async (data) => {
-  const res = await api.post(`${BOOK_API}`, data);
-  return res.data;
-};
+const createBook = async (data) => api.post(`${BOOK_API}`, data);
 
 const deleteBook = async (id) => {
-  const res = await api.delete(`${BOOK_API}/${id}`);
-  return res.data;
+  return await api.delete(`${BOOK_API}/${id}`);
 };
 
 const BookService = {

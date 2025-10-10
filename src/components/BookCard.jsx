@@ -1,72 +1,70 @@
-import BookService from "../services/book.service";
 import React from "react";
 import { Link } from "react-router-dom";
+import BookService from "../services/book.service";
 
-export const BookCard = (props) => {
-    const handleDelete = async (itemId) => {
-        const isConfirmed = window.confirm(
-            "Are you sure you want to delete this Book?"
-        );
-        if (!isConfirmed) return;
+const BookCard = (props) => {
+  const handleDelete = async (itemId) => {
+    const isConfirmed = window.confirm("แน่ใจไหมว่าจะลบหนังสือเล่มนี้?");
+    if (!isConfirmed) return;
 
-        try {
-            const response = await BookService.deleteBook(itemId)
-            if (response.status === 200) {
-                alert("Book deleted successfully!(ลบเเล้ว)");
-                window.location.reload();
-              
-            }
-          } catch (error) {
-            console.log(error);
-          }
-        };
+    try {
+      const response = await BookService.deleteBook(itemId);
+      if (response.status === 200) {
+        alert("ลบหนังสือเรียบร้อยแล้ว!");
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
-    <div className="card bg-base-100 w-96 shadow-md hover:shadow-lg transition">
-      <figure>
-        <img
-          src={coverImage || "https://via.placeholder.com/300x200"}
-          alt={title}
-          className="h-56 object-cover w-full"
-        />
-      </figure>
-      <div className="card-body">
-        <h2 className="card-title text-lg">
-          {title}
-          <div className="badge badge-secondary ml-2">{itemType}</div>
+    <div className="w-80 bg-gradient-to-br from-black via-gray-900 to-red-900 rounded-3xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden transform hover:scale-105 border border-gray-800">
+      <div className="p-5">
+        {/* Cover Image */}
+        {props.coverImage ? (
+          <img
+            src={props.coverImage}
+            alt={props.title}
+            className="w-full h-56 object-cover rounded-xl mb-4 border-2 border-red-700"
+          />
+        ) : (
+          <div className="w-full h-56 bg-gray-800 flex items-center justify-center text-gray-400 text-sm rounded-xl mb-4 border-2 border-red-700">
+            No Image
+          </div>
+        )}
+
+        {/* Title */}
+        <h2 className="text-2xl font-bold text-red-300 mb-3 drop-shadow-sm">
+          {props.title}
         </h2>
-        <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
-        <div className="mt-2 text-sm">
-          <p><b>ผู้แต่ง:</b> {author || "Unknown"}</p>
-          <p><b>หมวดหมู่:</b> {category}</p>
-          <p><b>สำนักพิมพ์:</b> {publisher || "-"}</p>
-          <p><b>ปี:</b> {publishYear}</p>
-      
+
+        {/* Info */}
+        <div className="text-gray-300 space-y-2 text-sm">
+          <p><strong>Author:</strong> {props.author}</p>
+          <p><strong>Genre:</strong> {props.genre}</p>
+          <p><strong>Publication Date:</strong> {props.publicationDate}</p>
+          <p><strong>ISBN:</strong> {props.isbn}</p>
         </div>
-        <div className="card-actions justify-end mt-3">
-          <a href={"/update/" + itemId} className="btn btn-warning btn-sm">
-            Edit
-          </a>
-          <button onClick={() => handleDelete(itemId)} className="btn btn-error btn-sm">
+
+        {/* Buttons */}
+        <div className="flex justify-between mt-6">
+          <button
+            onClick={() => handleDelete(props.itemId)}
+            className="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-xl transition-all duration-200 mr-2 shadow-md hover:shadow-lg"
+          >
             Delete
           </button>
+          <Link
+            to={`/updateBook/${props.itemId}`}
+            className="flex-1 bg-gray-800 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center"
+          >
+            Edit
+          </Link>
         </div>
       </div>
     </div>
   );
 };
 
-export default function BookCard({ book }) {
-  if (!book) return null;
-  const id = book.id || book._id || "";
-  return (
-    <div className="border p-4 rounded shadow">
-      <h3 className="text-lg font-semibold">{book.title || "Untitled"}</h3>
-      <p className="text-sm text-gray-600">Author: {book.author || "-"}</p>
-      <p className="text-sm">Price: {book.price ?? "-"}</p>
-      <div className="mt-2">
-        {id ? <Link to={`/books/${id}`} className="text-blue-600">View</Link> : null}
-      </div>
-    </div>
-  );
-}
+export default BookCard;

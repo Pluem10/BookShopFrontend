@@ -1,5 +1,5 @@
 import api from "./api.js";
-const ITEM_API = import.meta.env.ITEMS_API;
+const ITEM_API = import.meta.env.VITE_ITEMS_API;
 
 
 const getAllItem = async () => {

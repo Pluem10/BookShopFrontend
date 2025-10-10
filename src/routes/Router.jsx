@@ -1,20 +1,63 @@
 import { createBrowserRouter } from "react-router";
-import AddBook from "../pages/AddBook"; 
-import Update from "../pages/UpdateBook";
-import Home from "../pages/Book";
+import AddBook from "../pages/AddBook.jsx";
+import AddComic from "../pages/AddComic.jsx";
+import AddJournal from "../pages/AddJournal.jsx";
+import Books from "../pages/Book.jsx";
+import Comics from "../pages/Comics.jsx";
+import Home from "../pages/Home.jsx"
+import Journals from "../pages/Journals.jsx";
+import UpdateBook from "../pages/UpdateBook.jsx";
+import UpdateComic from "../pages/UpdateComic.jsx";
+import UpdateJournal from "../pages/UpdateJournal.jsx";
+import MainLayout from "../../layouts/MainLaout";
+import HomeAll from "../pages/HomeAll.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
-  },
-  {
-    path: "/add",
-    element: <AddBook />,
-  },
-  {
-    path: "/update",
-    element: <Update />,
+    element: <MainLayout />,
+    children: [
+      {
+        path: "/",
+        element: <Books />,
+      },
+      {
+        path: "/HomeAll",
+        element: <HomeAll />,
+      },
+      {
+        path: "/comics",
+        element: <Comics />,
+      },
+      {
+        path: "/journals",
+        element: <Journals />,
+      },
+
+      {
+        path: "/updateComic/:id",
+        element: <UpdateComic />,
+      },
+      {
+        path: "/updateJournal/:id",
+        element: <UpdateJournal />,
+      },
+      {
+        path: "/updateBook/:id",
+        element: <UpdateBook />,
+      },
+      {
+        path: "/addBook",
+        element: <AddBook />,
+      },
+      {
+        path: "/addComic",
+        element: <AddComic />,
+      }, {
+        path: "/addJournal",
+        element: <AddJournal />,
+      },
+    ]
   },
 ]);
 export default router;
